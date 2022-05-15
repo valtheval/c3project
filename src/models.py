@@ -3,6 +3,29 @@ from sklearn.metrics import fbeta_score, precision_score, recall_score
 from src import preprocessing
 
 
+class InferenceModel:
+    
+    def __init__(self, fitted_model, fitted_encoder, fitted_lb):
+        self.model = fitted_model
+        self.encoder = fitted_encoder
+        self.lb = fitted_lb
+    
+    
+    def predict(self, raw_data):
+        categorical_features = raw_data.select_dtypes(exclude="number").columns
+        X, _, _, _ = preprocessing.process_data(
+            X=raw_data,
+            categorical_features=categorical_features,
+            label=None,
+            training=False,
+            encoder=self.encoder,
+            lb=self.lb
+            )
+        return self.model.predict()
+        
+        
+
+
 # Optional: implement hyperparameter tuning.
 def train_model(model, X_train, y_train):
     """
@@ -104,3 +127,5 @@ def evaluate_on_slice(model, data, feature, split, cat_features, label, encoder,
     else:
         print(f"For person with {feature} = {split} we have precision={p1}, recall={r1} and f1 score={f1}")
         print(f"For person with {feature} != {split} we have precision={p0}, recall={r0} and f1 score={f0}")
+        
+        

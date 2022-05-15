@@ -1,3 +1,4 @@
 /census.csv
 /clean_census.csv
 /model.pkl
+/inference_model.pkl

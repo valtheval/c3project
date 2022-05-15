@@ -11,6 +11,7 @@ if __name__ == "__main__" :
     PATH_DIR_DATA = os.path.join(os.getcwd(), "data/")
     PATH_CLEAN_DATA = os.path.join(PATH_DIR_DATA, "clean_census.csv")
     PATH_MODEL = os.path.join(PATH_DIR_DATA, "model.pkl")
+    PATH_INFERENCE_MODEL = os.path.join(PATH_DIR_DATA, "inference_model.pkl")
     
     # Loading
     print("loading")
@@ -42,6 +43,10 @@ if __name__ == "__main__" :
     model = models.train_model(model, X, y)
     models.save_model(model, PATH_MODEL)
     
+    # Create model for inference
+    inference_model = models.InferenceModel(model, encoder, lb)
+    models.save_model(inference_model, PATH_INFERENCE_MODEL)
+    
     # Assessing on training
     print("assessing")
     y_preds = models.inference(model, X)
@@ -69,6 +74,7 @@ if __name__ == "__main__" :
         encoder=encoder,
         lb=lb
         )
+    
     
     
     
