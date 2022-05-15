@@ -12,16 +12,14 @@ class InferenceModel:
     
     
     def predict(self, raw_data):
-        categorical_features = raw_data.select_dtypes(exclude="number").columns
         X, _, _, _ = preprocessing.process_data(
             X=raw_data,
-            categorical_features=categorical_features,
             label=None,
             training=False,
             encoder=self.encoder,
             lb=self.lb
             )
-        return self.model.predict()
+        return self.model.predict(X)
         
         
 

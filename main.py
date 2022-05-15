@@ -11,7 +11,7 @@ app = FastAPI()
 
 # Load model
 with dvc.api.open(
-        'data/model.pkl',
+        'data/inference_model.pkl',
         remote='s3remote',
         mode='rb'
         ) as fd:
