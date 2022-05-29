@@ -5,7 +5,6 @@ from pydantic import BaseModel, Field
 import dvc.api
 import pandas as pd
 
-
 # Instantiate app
 app = FastAPI()
 
