@@ -1,0 +1,2 @@
+For person with education = HS-grad we have precision=0.9985007496251874, recall=0.9895988112927192 and f1 score=0.9940298507462687
+For person with education != HS-grad we have precision=0.9989913253984265, recall=0.9953768844221106 and f1 score=0.9971808296415626

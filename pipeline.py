@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 
 from src import preprocessing, models
 
@@ -16,6 +17,7 @@ if __name__ == "__main__" :
     # Loading
     print("loading")
     df = pd.read_csv(PATH_CLEAN_DATA)
+    df_train, df_test = train_test_split(df, test_size=0.20)
     
     # Preprocessing
     print("preprocessing")
@@ -31,8 +33,8 @@ if __name__ == "__main__" :
         ]
     label = "salary"
     
-    X, y, encoder, lb = preprocessing.process_data(
-        df, 
+    X_train, y_train, encoder, lb = preprocessing.process_data(
+        df_train, 
         categorical_features=cat_features, 
         label=label, 
         training=True)
@@ -40,7 +42,7 @@ if __name__ == "__main__" :
     # Training
     print("training")
     model = RandomForestClassifier(n_estimators=30)
-    model = models.train_model(model, X, y)
+    model = models.train_model(model, X_train, y_train)
     models.save_model(model, PATH_MODEL)
     
     # Create model for inference
@@ -49,13 +51,13 @@ if __name__ == "__main__" :
     
     # Assessing on training
     print("assessing")
-    y_preds = models.inference(model, X)
-    precision, recall, fbeta = models.compute_model_metrics(y, y_preds)
+    y_preds = models.inference(model, X_train)
+    precision, recall, fbeta = models.compute_model_metrics(y_train, y_preds)
     print(f"precision={precision}, recall={recall}, fbeta={fbeta}")
     
     models.evaluate_on_slice(
         model=model, 
-        data=df,
+        data=df_train,
         feature="age",
         split=38,
         cat_features=cat_features,
@@ -66,7 +68,7 @@ if __name__ == "__main__" :
 
     models.evaluate_on_slice(
         model=model, 
-        data=df,
+        data=df_train,
         feature="education",
         split="HS-grad",
         cat_features=cat_features,

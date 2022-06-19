@@ -119,11 +119,25 @@ def evaluate_on_slice(model, data, feature, split, cat_features, label, encoder,
     preds_0 = inference(model, X_0)
     p0, r0, f0 = compute_model_metrics(y_0, preds_0)
 
-    if feature in numerical_features:
-        print(f"For person with {feature} >= {split} we have precision={p1}, recall={r1} and f1 score={f1}")
-        print(f"For person with {feature} < {split} we have precision={p0}, recall={r0} and f1 score={f0}")
-    else:
-        print(f"For person with {feature} = {split} we have precision={p1}, recall={r1} and f1 score={f1}")
-        print(f"For person with {feature} != {split} we have precision={p0}, recall={r0} and f1 score={f0}")
+    with open("slice_output.txt", "w") as f:
+        if feature in numerical_features:
+            msg_up = f"For person with {feature} >= {split} we have precision={p1}, recall={r1} and f1 score={f1}"
+            msg_down = f"For person with {feature} < {split} we have precision={p0}, recall={r0} and f1 score={f0}"
+            print(msg_up)
+            print(msg_down)
+            f.write(msg_up)
+            f.write("\n")
+            f.write(msg_down)
+        else:
+            msg_up = f"For person with {feature} = {split} we have precision={p1}, recall={r1} and f1 score={f1}"
+            msg_down = f"For person with {feature} != {split} we have precision={p0}, recall={r0} and f1 score={f0}"
+            print(msg_up)
+            print(msg_down)
+            f.write(msg_up)
+            f.write("\n")
+            f.write(msg_down)
+    
+    
+        
         
         
