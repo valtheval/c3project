@@ -19,10 +19,13 @@ For additional information see the Model Card paper: https://arxiv.org/pdf/1810.
 - 20% of the dataset (random split), 6513 rows, 108 columns
 
 ## Metrics
-- Model assessed using Precision, Recall and f1 score
+- Model assessed using Precision, Recall and f1 score. Results on test set are:
+- precision=0.73
+- recall=0.62
+- fbeta=0.67
 
 ## Ethical Considerations
-- No sensitive data, the data is anonymized
+- No sensitive data, the data is anonymized. However, data contains sensitive information like 'race' or 'gender' that might induce bias in the model. Results should be taken carefully and further analysis is recommended to assess thoses potential bias
 
 ## Caveats and Recommendations
 - Should be used carefully since it's the 2nd version of model without hyperparamter tunning. This is an exercise on a benchmark dataset, you can use it to learn basics of data science and MLOps.

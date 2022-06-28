@@ -50,7 +50,7 @@ if __name__ == "__main__" :
     models.save_model(inference_model, PATH_INFERENCE_MODEL)
     
     # Assessing on training
-    print("assessing")
+    print("Assessing on train")
     y_preds = models.inference(model, X_train)
     precision, recall, fbeta = models.compute_model_metrics(y_train, y_preds)
     print(f"precision={precision}, recall={recall}, fbeta={fbeta}")
@@ -70,7 +70,43 @@ if __name__ == "__main__" :
         model=model, 
         data=df_train,
         feature="education",
-        split="HS-grad",
+        split=None,
+        cat_features=cat_features,
+        label=label,
+        encoder=encoder,
+        lb=lb
+        )
+    
+    # Assessing on test
+    X_test, y_test, encoder, lb = preprocessing.process_data(
+        df_test, 
+        categorical_features=cat_features, 
+        label=label,
+        encoder=encoder,
+        lb=lb,
+        training=False)
+    
+    print("Assessing on test")
+    y_preds = models.inference(model, X_test)
+    precision, recall, fbeta = models.compute_model_metrics(y_test, y_preds)
+    print(f"precision={precision}, recall={recall}, fbeta={fbeta}")
+    
+    models.evaluate_on_slice(
+        model=model, 
+        data=df_test,
+        feature="age",
+        split=38,
+        cat_features=cat_features,
+        label=label,
+        encoder=encoder,
+        lb=lb
+        )
+
+    models.evaluate_on_slice(
+        model=model, 
+        data=df_test,
+        feature="education",
+        split=None,
         cat_features=cat_features,
         label=label,
         encoder=encoder,

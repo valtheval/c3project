@@ -98,45 +98,45 @@ def load_model(path):
 
 def evaluate_on_slice(model, data, feature, split, cat_features, label, encoder, lb):
     numerical_features = data.select_dtypes(include="number").columns
+    msgs = []
     if feature in numerical_features:
         data_1 = data[data[feature] >= split]
         data_0 = data[data[feature] < split]
-    else:
-        data_1 = data[data[feature] == split]
-        data_0 = data[data[feature] != split]
-
-    X_1, y_1, _, _ = preprocessing.process_data(
+        X_1, y_1, _, _ = preprocessing.process_data(
         data_1, categorical_features=cat_features, label=label, training=False, encoder=encoder, lb=lb
-    )
+        )
 
-    X_0, y_0, _, _ = preprocessing.process_data(
-        data_0, categorical_features=cat_features, label=label, training=False, encoder=encoder, lb=lb
-    )
+        X_0, y_0, _, _ = preprocessing.process_data(
+            data_0, categorical_features=cat_features, label=label, training=False, encoder=encoder, lb=lb
+        )
+        
+        preds_1 = inference(model, X_1)
+        p1, r1, f1 = compute_model_metrics(y_1, preds_1)
+        
+        preds_0 = inference(model, X_0)
+        p0, r0, f0 = compute_model_metrics(y_0, preds_0)
+        
+        msg_up = f"For person with {feature} >= {split} we have precision={p1}, recall={r1} and f1 score={f1}"
+        msg_down = f"For person with {feature} < {split} we have precision={p0}, recall={r0} and f1 score={f0}"
+        msgs.append(msg_up)
+        msgs.append(msg_down)
 
-    preds_1 = inference(model, X_1)
-    p1, r1, f1 = compute_model_metrics(y_1, preds_1)
+    else:
+        for value in data[feature].unique() :
+            data_i = data[data[feature] == value]
+            X_i, y_i, _, _ = preprocessing.process_data(
+                data_i, categorical_features=cat_features, label=label, training=False, encoder=encoder, lb=lb
+                )
+            preds_i = inference(model, X_i)
+            pi, ri, fi = compute_model_metrics(y_i, preds_i)
+            msg = f"For person with {feature} = {value} we have precision={pi}, recall={ri} and f1 score={fi}"
+            msgs.append(msg)
     
-    preds_0 = inference(model, X_0)
-    p0, r0, f0 = compute_model_metrics(y_0, preds_0)
-
     with open("slice_output.txt", "w") as f:
-        if feature in numerical_features:
-            msg_up = f"For person with {feature} >= {split} we have precision={p1}, recall={r1} and f1 score={f1}"
-            msg_down = f"For person with {feature} < {split} we have precision={p0}, recall={r0} and f1 score={f0}"
-            print(msg_up)
-            print(msg_down)
-            f.write(msg_up)
+        for msg in msgs:
+            print(msg)
+            f.write(msg)
             f.write("\n")
-            f.write(msg_down)
-        else:
-            msg_up = f"For person with {feature} = {split} we have precision={p1}, recall={r1} and f1 score={f1}"
-            msg_down = f"For person with {feature} != {split} we have precision={p0}, recall={r0} and f1 score={f0}"
-            print(msg_up)
-            print(msg_down)
-            f.write(msg_up)
-            f.write("\n")
-            f.write(msg_down)
-    
     
         
         
